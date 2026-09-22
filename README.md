@@ -22,7 +22,7 @@ Voir le cahier des charges pour le détail du périmètre, des règles métier (
 - **Base de données** : MySQL 8.4
 - **Environnement local** : Laragon (fournit PHP, Composer, MySQL, phpMyAdmin, Mailpit)
 
-Le code de l'application se trouve dans [`backend/`](backend).
+Le code de l'application se trouve dans [`app/`](app). C'est un monolithe Symfony (pas de séparation front/back en projets distincts) : les vues Twig + Bootstrap et la logique métier vivent dans le même projet.
 
 ## 1. Installer Laragon
 
@@ -79,7 +79,7 @@ cd DevAgency
 ## 3. Installer les dépendances
 
 ```bash
-cd backend
+cd app
 composer install
 ```
 
@@ -88,7 +88,7 @@ composer install
 Chaque développeur doit avoir sa propre config locale : **ne modifie pas `.env`**, crée un `.env.local` (ignoré par git) à côté :
 
 ```bash
-# backend/.env.local
+# app/.env.local
 DATABASE_URL="mysql://root:@127.0.0.1:3306/a_skalinata?serverVersion=8.4.3&charset=utf8mb4"
 ```
 
@@ -105,7 +105,7 @@ php bin/console doctrine:migrations:migrate
 
 **Option recommandée — via Laragon (Apache virtual host) :**
 
-Place (ou clone) le dossier du projet dans `C:\laragon\www\`, ou crée un lien symbolique vers `backend/public`, puis Laragon génère automatiquement `http://backend.test`. C'est la façon la plus fiable de servir l'app car AssetMapper (qui sert Bootstrap et le JS) a besoin qu'Apache route tout vers `public/index.php`.
+Place (ou clone) le dossier du projet dans `C:\laragon\www\`, ou crée un lien symbolique vers `app/public`, puis Laragon génère automatiquement `http://app.test`. C'est la façon la plus fiable de servir l'app car AssetMapper (qui sert Bootstrap et le JS) a besoin qu'Apache route tout vers `public/index.php`.
 
 **Option alternative — serveur PHP intégré :**
 
@@ -115,7 +115,7 @@ php -S 127.0.0.1:8000 -t public public/index.php
 
 ⚠️ Le paramètre `public/index.php` en 3ᵉ argument est indispensable : sans lui, les assets (CSS/JS Bootstrap servis dynamiquement par AssetMapper) renvoient une 404 et la page s'affiche sans style.
 
-Ouvre ensuite `http://127.0.0.1:8000` (ou `http://backend.test`).
+Ouvre ensuite `http://127.0.0.1:8000` (ou `http://app.test`).
 
 ## Commandes utiles
 
