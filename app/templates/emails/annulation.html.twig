@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; background:#f4f4f6; margin:0; padding:24px;">
+    <div style="max-width:480px;margin:0 auto;background:#ffffff;border-top:6px solid #14141a;border-radius:8px;padding:32px;">
+        <h1 style="color:#14141a;font-size:20px;margin-top:0;">Réservation annulée</h1>
+        <p>Bonjour {{ reservation.user.prenom }},</p>
+        <p>Votre réservation pour l'événement suivant a bien été annulée :</p>
+        <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+            <tr>
+                <td style="padding:6px 0;color:#6c6f76;">Événement</td>
+                <td style="padding:6px 0;font-weight:bold;">{{ reservation.evenement.titre }}</td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0;color:#6c6f76;">Date</td>
+                <td style="padding:6px 0;">{{ reservation.evenement.dateDebut|date('d/m/Y H:i') }} – {{ reservation.evenement.dateFin|date('H:i') }}</td>
+            </tr>
+        </table>
+        <p>Votre place est de nouveau disponible pour un autre élève.</p>
+        <p style="margin-top:24px;">— L'équipe A Skalinata</p>
+    </div>
+</body>
+</html>

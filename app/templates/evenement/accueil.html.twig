@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil — A Skalinata{% endblock %}
+
+{% block body %}
+<section class="hero">
+    <div class="hero-inner">
+        <p class="hero-eyebrow">École MIRA · Bastia &amp; Ajaccio</p>
+        <h1 class="hero-title">A <span class="hero-swash">Skalinata<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3,15 C45,6 85,17 118,9 C150,2 175,13 197,7" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg></span></h1>
+        <p class="hero-subtitle">Rejoignez-nous dans un événement pour partager un moment convivial.</p>
+        <div class="hero-actions">
+            <a href="#evenements" class="btn btn-primary btn-lg">Voir les événements</a>
+            <a href="{{ path('app_calendrier') }}" class="btn btn-outline-light btn-lg" data-turbo="false">Le calendrier</a>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5" id="evenements">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-4">
+        <div>
+            <p class="section-eyebrow mb-1">À venir</p>
+            <h2 class="section-title h3 mb-0">Les prochains événements</h2>
+        </div>
+        <a href="{{ path('app_calendrier') }}" class="btn btn-outline-primary" data-turbo="false">Voir le calendrier</a>
+    </div>
+
+    {% if evenements is empty %}
+        <div class="alert alert-secondary">Aucun événement à venir pour le moment.</div>
+    {% else %}
+        <div class="row g-3">
+            {% for evenement in evenements %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card evenement-card h-100">
+                        <div class="card-body">
+                            <h3 class="h5 card-title">{{ evenement.titre }}</h3>
+                            <p class="card-text text-muted mb-1">
+                                {{ evenement.dateDebut|date('d/m/Y H:i') }} – {{ evenement.dateFin|date('H:i') }}
+                            </p>
+                            <p class="card-text text-muted mb-2">
+                                {{ evenement.lieuLabel }}
+                                {% if evenement.exterieur %}<span class="badge bg-success ms-1">Extérieur</span>{% endif %}
+                            </p>
+                            {% if evenement.exterieur %}
+                                <span class="badge badge-places">Places illimitées</span>
+                            {% elseif evenement.complet %}
+                                <span class="badge badge-complet">Complet</span>
+                            {% else %}
+                                <span class="badge badge-places">{{ evenement.placesRestantes }} place(s) restante(s)</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-3">
+                            <a href="{{ path('app_evenement_show', {id: evenement.id}) }}" class="btn btn-primary btn-sm">Voir l'événement</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

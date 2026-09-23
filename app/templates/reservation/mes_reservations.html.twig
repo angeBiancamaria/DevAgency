@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes réservations — A Skalinata{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .reservations-table thead th {
+            font-family: var(--font-body);
+            font-size: .74rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--bde-taupe);
+            border-bottom-color: var(--bde-sable) !important;
+        }
+        .reservations-table td { border-color: var(--bde-sable) !important; vertical-align: middle; }
+        .reservations-table a { color: var(--bde-encre); font-weight: 600; text-decoration: none; }
+        .reservations-table a:hover { color: var(--bde-rouge); }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <p class="section-eyebrow mb-1">Mon espace</p>
+    <h1 class="section-title h3 mb-4">Mes réservations</h1>
+
+    {% if reservations is empty %}
+        <div class="alert alert-secondary">Vous n'avez aucune réservation pour le moment.</div>
+    {% else %}
+        <div class="table-responsive bg-white border" style="border-color: var(--bde-sable) !important; border-radius: 4px;">
+            <table class="table align-middle reservations-table mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Événement</th>
+                        <th>Date</th>
+                        <th>Lieu</th>
+                        <th>Statut</th>
+                        <th class="pe-4"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in reservations %}
+                        <tr>
+                            <td class="ps-4">
+                                <a href="{{ path('app_evenement_show', {id: reservation.evenement.id}) }}">{{ reservation.evenement.titre }}</a>
+                            </td>
+                            <td>{{ reservation.evenement.dateDebut|date('d/m/Y H:i') }}</td>
+                            <td>{{ reservation.evenement.lieuLabel }}</td>
+                            <td>
+                                {% if reservation.statut.value == 'confirmee' %}
+                                    <span class="badge badge-places">Confirmée</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Annulée</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                {% if reservation.statut.value == 'confirmee' %}
+                                    <form method="post" action="{{ path('app_reservation_annuler', {id: reservation.id}) }}" onsubmit="return confirm('Annuler votre réservation ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ reservation.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Annuler</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
