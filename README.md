@@ -117,6 +117,35 @@ php -S 127.0.0.1:8000 -t public public/index.php
 
 Ouvre ensuite `http://127.0.0.1:8000` (ou `http://app.test`).
 
+## Emails (Mailpit)
+
+Laragon fournit **Mailpit**, un faux serveur SMTP qui capture les emails envoyés en local sans les envoyer réellement — indispensable pour tester les emails de confirmation/annulation du cahier des charges.
+
+Lance-le (SMTP sur `1025`, interface web sur `8025`) :
+
+```bash
+"C:\laragon\bin\mailpit\1.22.3\mailpit.exe" --smtp 127.0.0.1:1025 --listen 127.0.0.1:8025
+```
+
+Puis ajoute dans ton `app/.env.local` :
+
+```
+MAILER_DSN=smtp://127.0.0.1:1025
+```
+
+Les emails envoyés par l'app apparaissent sur `http://127.0.0.1:8025`. Pour tester rapidement : `php bin/console mailer:test toi@exemple.fr --from=noreply@a-skalinata.fr`.
+
+## Back-office admin (EasyAdmin)
+
+Le back-office (CRUD événements, liste des participants) est construit avec [EasyAdminBundle](https://easycorp.github.io/EasyAdminBundle/), accessible sur `/admin`.
+
+```bash
+php bin/console make:admin:dashboard   # génère le DashboardController (déjà fait, une seule fois)
+php bin/console make:admin:crud        # génère un CRUD pour une entité existante
+```
+
+Le dashboard est dans [`app/src/Controller/Admin/DashboardController.php`](app/src/Controller/Admin/DashboardController.php) — c'est là qu'on enregistre les menus vers chaque CRUD au fur et à mesure que les entités existent.
+
 ## Commandes utiles
 
 ```bash
