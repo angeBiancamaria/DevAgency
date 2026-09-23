@@ -43,7 +43,7 @@ class EvenementController extends AbstractController
                 'start' => $evenement->getDateDebut()->format(\DateTimeInterface::ATOM),
                 'end' => $evenement->getDateFin()->format(\DateTimeInterface::ATOM),
                 'url' => '/evenements/' . $evenement->getId(),
-                'color' => $complet ? '#14141a' : ($evenement->isExterieur() ? '#2f9e44' : '#c8102e'),
+                'color' => $complet ? '#14141a' : ($evenement->isExterieur() ? '#2f9e44' : '#179aaf'),
             ];
         }, $evenements);
 
