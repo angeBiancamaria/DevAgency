@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription — A Skalinata{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+    <div class="auth-card">
+        <p class="auth-brand">A <span>Skalinata</span></p>
+        <h1>Créer un compte</h1>
+        <p class="auth-subtitle">Inscrivez-vous pour réserver vos créneaux sur les événements du BDE.</p>
+
+        {{ form_start(registrationForm) }}
+            <div class="mb-3">
+                {{ form_label(registrationForm.prenom) }}
+                {{ form_widget(registrationForm.prenom, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.prenom) }}
+            </div>
+            <div class="mb-3">
+                {{ form_label(registrationForm.nom) }}
+                {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.nom) }}
+            </div>
+            <div class="mb-3">
+                {{ form_label(registrationForm.email) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
+            <div class="mb-3">
+                {{ form_label(registrationForm.plainPassword.first) }}
+                {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.plainPassword.first) }}
+            </div>
+            <div class="mb-3">
+                {{ form_label(registrationForm.plainPassword.second) }}
+                {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.plainPassword.second) }}
+            </div>
+
+            <button class="btn btn-primary mt-2" type="submit">Créer mon compte</button>
+        {{ form_end(registrationForm) }}
+
+        <div class="auth-switch">
+            Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

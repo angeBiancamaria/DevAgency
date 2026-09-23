@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier — A Skalinata{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .calendar-card { max-width: 1100px; margin: 0 auto; }
+        .fc { font-family: var(--font-body); }
+        .fc-event { cursor: pointer; border: none; }
+        .fc-toolbar-title { font-family: var(--font-display); font-weight: 500; color: var(--bde-noir); }
+        .fc-button-primary { background-color: var(--bde-noir) !important; border-color: var(--bde-noir) !important; }
+        .fc-button-primary:hover { background-color: var(--bde-rouge) !important; border-color: var(--bde-rouge) !important; }
+        .fc-day-today { background: var(--bde-sable) !important; }
+        .fc-theme-standard td, .fc-theme-standard th, .fc-theme-standard .fc-scrollgrid { border-color: var(--bde-sable); }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Chargées dans le <head> (et non dans le <body>) : Turbo attend que les scripts du
+       <head> soient chargés avant d'afficher la page, ce qui évite une course avec
+       l'initialisation du calendrier ci-dessous lors d'une navigation Turbo. #}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales/fr.global.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <p class="section-eyebrow mb-1">Tous les événements</p>
+    <h1 class="section-title h3 mb-4">Le calendrier</h1>
+
+    <div class="calendar-card p-3 p-md-4 bg-white border" style="border-color: var(--bde-sable) !important; border-radius: 4px;">
+        <div id="calendar"></div>
+    </div>
+</div>
+
+<script>
+    // Turbo (activé par défaut dans le squelette Symfony) remplace le <body> en AJAX
+    // lors d'un clic sur un lien : "DOMContentLoaded" ne se déclenche donc plus jamais
+    // après le tout premier chargement. On s'appuie sur "turbo:load", qui se déclenche
+    // à la fois au chargement initial ET après chaque navigation Turbo.
+    function initCalendrier() {
+        const calendarEl = document.getElementById('calendar');
+        if (!calendarEl || calendarEl.dataset.initialized || typeof FullCalendar === 'undefined') {
+            return;
+        }
+        calendarEl.dataset.initialized = 'true';
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'fr',
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listMonth',
+            },
+            height: 'auto',
+            events: '{{ path('app_api_evenements') }}',
+        });
+        calendar.render();
+    }
+
+    document.addEventListener('turbo:load', initCalendrier);
+    document.addEventListener('DOMContentLoaded', initCalendrier);
+</script>
+{% endblock %}
