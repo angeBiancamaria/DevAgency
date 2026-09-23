@@ -4,61 +4,74 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}A Skalinata{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><rect width=%22128%22 height=%22128%22 fill=%22%2314141a%22/><text y=%22.9em%22 x=%22.15em%22 font-size=%2296%22 fill=%22%23c8102e%22>A</text></svg>">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
         {% block stylesheets %}
         {% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
-
-        {% set frankenphp_hot_reload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-        {% if frankenphp_hot_reload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphp_hot_reload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
     </head>
-    <body class="d-flex flex-column min-vh-100">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" href="{{ path('app_home') }}">A Skalinata</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_home') }}">Calendrier</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Mes réservations</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Connexion</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <main class="container py-4 flex-grow-1">
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <body>
+        {% block navbar %}
+            <nav class="navbar navbar-expand-md navbar-bde">
+                <div class="container">
+                    <a class="navbar-brand fw-bold" href="{{ path('app_accueil') }}">A <span>Skalinata</span></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBde">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navBde">
+                        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_calendrier') }}" data-turbo="false">Calendrier</a>
+                            </li>
+                            {% if is_granted('ROLE_USER') %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_mes_reservations') }}">Mes réservations</a>
+                                </li>
+                            {% endif %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('admin') }}">Administration</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <ul class="navbar-nav">
+                            {% if is_granted('ROLE_USER') %}
+                                <li class="nav-item d-flex align-items-center me-3">
+                                    <span class="nav-link text-white-50">{{ app.user.nomComplet }}</span>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('app_register') }}">Inscription</a>
+                                </li>
+                            {% endif %}
+                        </ul>
                     </div>
-                {% endfor %}
+                </div>
+            </nav>
+        {% endblock %}
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="container mt-3">
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </div>
             {% endfor %}
+        {% endfor %}
 
-            {% block body %}{% endblock %}
-        </main>
-
-        <footer class="bg-dark text-white-50 py-3 mt-auto">
-            <div class="container text-center small">
-                A Skalinata &mdash; École MIRA (Bastia / Ajaccio)
-            </div>
-        </footer>
+        {% block body %}{% endblock %}
     </body>
 </html>

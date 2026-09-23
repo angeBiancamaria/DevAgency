@@ -18,6 +18,9 @@
 
 {% block javascripts %}
     {{ parent() }}
+    {# Chargées dans le <head> (et non dans le <body>) : Turbo attend que les scripts du
+       <head> soient chargés avant d'afficher la page, ce qui évite une course avec
+       l'initialisation du calendrier ci-dessous lors d'une navigation Turbo. #}
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales/fr.global.min.js"></script>
 {% endblock %}
@@ -33,6 +36,10 @@
 </div>
 
 <script>
+    // Turbo (activé par défaut dans le squelette Symfony) remplace le <body> en AJAX
+    // lors d'un clic sur un lien : "DOMContentLoaded" ne se déclenche donc plus jamais
+    // après le tout premier chargement. On s'appuie sur "turbo:load", qui se déclenche
+    // à la fois au chargement initial ET après chaque navigation Turbo.
     function initCalendrier() {
         const calendarEl = document.getElementById('calendar');
         if (!calendarEl || calendarEl.dataset.initialized || typeof FullCalendar === 'undefined') {
